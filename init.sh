@@ -166,7 +166,7 @@ service iptables-persistent start
 #disable root
 echo "disable root "
 sudo passwd -l root
-sudo passwd -l ubuntu
+sudo deluser --remove-home ubuntu
 # remove myself to prevent any unintended changes at a later stage
 rm $0
 # finish
