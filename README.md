@@ -11,8 +11,6 @@ Created by: **Florian Kasper**
 The script supports the following Ubuntu editions out of the box:
 
 * Ubuntu 14.04.3 Server LTS i386  - Trusty Tahr
-* Ubuntu 15.10 Server i386        - Wily Werewolf
-* Ubuntu 16.04 Server i386        - Xenial Xerus 
 
 
 This script has been tested on and with the three versions as well, but I see no reason why it shouldn't work with other Ubuntu editions. Other editions would require minor changes to the script though.
@@ -37,10 +35,9 @@ $ sudo ./create-unattended-iso.sh
  which ubuntu edition would you like to remaster:
 
   [1] Ubuntu 14.04.3 LTS Server i386  - Trusty Tahr
-  [2] Ubuntu 15.10 Server i386  - Wily Werewolf
-  [3] Ubuntu 16.04 Server i386  - Xenial Xerus
 
- please enter your preference: [1|2|3]:
+
+ please enter your preference: [1]:
 ```
 
 * Enter your desired timezone; the default is *Europe/Amsterdam*:
@@ -76,8 +73,8 @@ This script does a bunch of stuff, here's the quick walk-through:
 * It asks you for your preferences regarding the unattended ISO
 * Downloads the appropriate Ubuntu original ISO straight from the Ubuntu servers; if a file with the exact name exists, it will use that instead (so it won't download it more than once if you are creating several unattended ISO's with different defaults)
 * Downloads the netson preseed file; this file contains all the magic answers to auto-install ubuntu. It uses the following defaults for you (only showing most important, for details, simply check the seed file in this repository):
- * Language/locale: EN_US
- * Keyboard layout: DE 
+ * Language/locale: fr_FR
+ * Keyboard layout: FR 
  * Root login disabled (so make sure you write down your default usernames' password!)
  * Partitioning: LVM, full disk, single partition
 * Install the mkpasswd program (part of the whois package) to generate a hashed version of your password
@@ -101,7 +98,7 @@ This script does a bunch of stuff, here's the quick walk-through:
  your username is: ubuntu
  your password is: 
  your hostname is: ubuntu
- your timezone is: Europe/Amsterdam
+ your timezone is: Europe/Paris
 ```
 
 ### Once Ubuntu is installed ...
