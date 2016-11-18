@@ -66,24 +66,14 @@ while true; do
     echo " which ubuntu edition would you like to remaster:"
     echo
     echo "  [1] Ubuntu 14.04.4 LTS Server i386  - Trusty Tahr"
-    echo "  [2] Ubuntu 15.10 Server i386 - Wily Werewolf"
-    echo "  [3] Ubuntu 16.04 Server i386 - Xenial Xerus"
     echo
-    read -p " please enter your preference: [1|2|3]: " ubver
+    read -p " please enter your preference: [1]: " ubver
     case $ubver in
         [1]* )  download_file="ubuntu-14.04.4-server-i386.iso"            # filename of the iso to be downloaded
                 download_location="http://releases.ubuntu.com/14.04.4/"   # location of the file to be downloaded
                 new_iso_name="ubuntu-14.04.4-server-i386-unattended.iso"  # filename of the new iso file to be created
                 break;;
-        [2]* )  download_file="ubuntu-15.10-server-i386.iso"              # filename of the iso to be downloaded
-                download_location="http://releases.ubuntu.com/15.10/"     # location of the file to be downloaded
-                new_iso_name="ubuntu-15.10-server-i386-unattended.iso"    # filename of the new iso file to be created
-                break;;
-        [3]* )  download_file="ubuntu-16.04-beta2-server-i386.iso"              # filename of the iso to be downloaded
-                download_location="http://releases.ubuntu.com/16.04/"     # location of the file to be downloaded
-                new_iso_name="ubuntu-16.04-server-i386-unattended.iso"    # filename of the new iso file to be created
-                break;;
-        * ) echo " please answer [1],[2] or [3]";;
+        * ) echo " please answer [1]";;
     esac
 done
 
@@ -134,7 +124,7 @@ fi
 # download lvm seed file
 if [[ ! -f $tmp/$seed_file ]]; then
     echo -n " downloading $seed_file: "
-    download "https://github.com/floriankasper/unattended-ubuntu-server/raw/master/$seed_file"
+    download "https://raw.githubusercontent.com/Pwapou/ubuntu-unattend/master/$seed_file"
 fi
 
 # install required packages
@@ -178,7 +168,7 @@ if $autostart ; then
 fi
 
 # set late command
-late_command="chroot /target wget -O /home/$username/init.sh https://raw.githubusercontent.com/Pwapou/Toko-1/master/init.sh ;\
+late_command="chroot /target wget -O /home/$username/init.sh https://raw.githubusercontent.com/Pwapou/ubuntu-unattend/master/init.sh ;\
     chroot /target chmod +x /home/$username/init.sh ;"
 
 # copy the netson seed file to the iso
