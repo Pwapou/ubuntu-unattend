@@ -4,7 +4,6 @@ This simple script will create an unattended Ubuntu ISO from start to finish. It
 
 This script creates a 100% original Ubuntu installation; the only additional software added is ```openssh-server```. There is no ```apt-get update``` performed. You have all the freedom in the world to customize your Ubuntu installation whichever way you see fit. This script just takes the pain out of re-installing Ubuntu over and over again.
 
-Created by: **Florian Kasper**
 
 ## Compatibility
 
