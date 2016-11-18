@@ -56,12 +56,13 @@ if ! grep -q "noninteractive" /proc/cmdline ; then
 	read -ep " please enter your hostname (first letter of your first name and your full last name) : " -i "$default_hostname" hostname
 	read -ep " please enter your bytel domain: " -i "$default_domain" domain
 	read -ep " please enter your username: " -i "$default_user" username
-	read -ep " please enter your  secure password: " -i "$default_password" password
+	read -ep " please enter your secure password: " -i "$default_password" password
 fi
 
 # print status message
 echo " preparing your server; this may take a few minutes ..."
-
+(apt-get -y install whois > /dev/null 2>&1) & spinner $! "installing whois..."
+echo
 # set fqdn
 fqdn="$hostname.$domain"
 
@@ -162,7 +163,7 @@ echo "*filter
 COMMIT" > /etc/iptables/rules.v4
 
 service iptables-persistent start
-
+#encrypt home folder
 #disable root
 echo "disable root "
 sudo passwd -l root
