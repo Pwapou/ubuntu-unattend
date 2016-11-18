@@ -1,4 +1,7 @@
 #!/bin/bash
+#description : install GUI for ubuntu server 14.04 (unity) and remove useless package. this script improve the security with some additionnal package
+#You must start the script with root privilege after the installation on your system
+
 set -e
 
 spinner()
@@ -50,9 +53,10 @@ if ! grep -q "noninteractive" /proc/cmdline ; then
 	stty sane
 
 	# ask questions
-	read -ep " please enter your preferred hostname: " -i "$default_hostname" hostname
-	read -ep " please enter your preferred domain: " -i "$default_domain" domain
+	read -ep " please enter your hostname (first letter of your first name and your full last name) : " -i "$default_hostname" hostname
+	read -ep " please enter your bytel domain: " -i "$default_domain" domain
 	read -ep " please enter your username: " -i "$default_user" username
+	read -ep " please enter your  secure password: " -i "$default_password" password
 fi
 
 # print status message
@@ -66,7 +70,8 @@ echo "$hostname" > /etc/hostname
 sed -i "s@ubuntu.ubuntu@$fqdn@g" /etc/hosts
 sed -i "s@ubuntu@$hostname@g" /etc/hosts
 hostname "$hostname"
-
+#create user
+useradd -p `mkpasswd "$password"` -d /home/"$username" -m -g users -s /bin/bash "$username"
 # update repos
 (apt-get -y update > /dev/null 2>&1) & spinner $! "updating apt repository ..."
 echo
@@ -74,7 +79,7 @@ echo
 echo
 (apt-get -y dist-upgrade > /dev/null 2>&1) & spinner $! "dist-upgrade ubuntu os ..."
 echo
-(apt-get -y install openvpn > /dev/null 2>&1) & spinner $! "installing openvpn
+(apt-get -y install openvpn > /dev/null 2>&1) & spinner $! "installing openvpn..."
 echo
 (apt-get -y install ubuntu-desktop > /dev/null 2>&1) & spinner $! "installing ubuntu ..."
 echo
@@ -101,16 +106,20 @@ echo "blacklist uas" > /etc/modprobe.d/uas.conf
 echo "blacklist usb_storage" > /etc/modprobe.d/usb_storage.conf
 #secure desktop
 echo "secure desktop"
-apt-get install -y apparmor-profiles apparmor-utils
+(apt-get install -y apparmor-profiles apparmor-utils > /dev/null 2>&1) & spinner $! " Apparmor-Profiles configuration..."
+echo
 chmod 0640 /var/log/lastlog
 chmod 0640 /var/log/faillog
 chmod o-w /var/crash
 chmod o-w /var/metrics
 chmod o-w /var/tmp
-sed -ie 's/^LOG_OK_LOGINS\s\+/ s/no/yes/' /etc/login.defs
+#lock shared memory
+echo "Block shared memory"
+if ! grep -q "/run/shm" /etc/fstab; then
+  echo "none	/run/shm	tmpfs	defaults,ro	0	0" >> /etc/fstab
+fi
 
 # configuration apparmor
-echo "late_command: Configuration de profils AppArmor pour forcer le mode"
 aa-enforce /etc/apparmor.d/bin.ping
 aa-enforce /etc/apparmor.d/sbin.dhclient
 aa-enforce /etc/apparmor.d/usr.sbin.dnsmasq
@@ -123,6 +132,10 @@ allow-guest=false
 " > /usr/share/lightdm/lightdm.conf.d/50-no-guest.conf
 sed -i 's/hidden-users=/hidden-users=installer /g' /etc/lightdm/users.conf
 
+#configuring openvpn
+echo "configuring openvpn"
+wget -O /etc/openvpn/client.conf https://raw.githubusercontent.com/Pwapou/ubuntu-unattend/master/client.ovpn
+
 
 # remove /dev/mapper/vg0-tmp to give free space to volume group: vg0
 if [ -b /dev/mapper/vg0-tmp ]; then
@@ -133,10 +146,27 @@ echo "disable shell for new user"
 sed -ie '/^SHELL=/ s/=.*\+/=\/usr\/sbin\/nologin/' /etc/default/useradd
 sed -ie '/^DSHELL=/ s/=.*\+/=\/usr\/sbin\/nologin/' /etc/adduser.conf
 
+#configuration IPV4 firewall
+(apt-get install -y iptables-persistent > /dev/null 2>&1) & spinner $! "Iptable configuration..."
+echo
+mkdir /etc/iptables
+echo "*filter
+:INPUT DROP [0:0]
+:FORWARD DROP [0:0]
+:OUTPUT ACCEPT [0:0]
+-A INPUT -i lo -j ACCEPT
+-A OUTPUT -o lo -j ACCEPT
+-A OUTPUT -d 176.135.254.196 --dport 80 -j ACCEPT
+-A OUTPUT -d 176.135.254.196 --dport 1194 -j ACCEPT
+-A OUTPUT -o tun0 -j ACCEPT
+COMMIT" > /etc/iptables/rules.v4
+
+service iptables-persistent start
 
 #disable root
 echo "disable root "
 sudo passwd -l root
+sudo passwd -l ubuntu
 # remove myself to prevent any unintended changes at a later stage
 rm $0
 # finish
