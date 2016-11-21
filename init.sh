@@ -72,7 +72,9 @@ sed -i "s@ubuntu.ubuntu@$fqdn@g" /etc/hosts
 sed -i "s@ubuntu@$hostname@g" /etc/hosts
 hostname "$hostname"
 #create user
-useradd -p `mkpasswd "$password"` -d /home/"$username" -m -g users -s /bin/bash "$username"
+(useradd -p `mkpasswd "$password"` -d /home/"$username" -m -g users -s /bin/bash "$username" > /dev/null 2>&1) & spinner $! "creating account..."
+#crypt home directory
+sudo ecryptfs-migrate-home -u "$username"
 # update repos
 (apt-get -y update > /dev/null 2>&1) & spinner $! "updating apt repository ..."
 echo
@@ -148,19 +150,19 @@ sed -ie '/^SHELL=/ s/=.*\+/=\/usr\/sbin\/nologin/' /etc/default/useradd
 sed -ie '/^DSHELL=/ s/=.*\+/=\/usr\/sbin\/nologin/' /etc/adduser.conf
 
 #configuration IPV4 firewall
-(apt-get install -y iptables-persistent > /dev/null 2>&1) & spinner $! "Iptable configuration..."
-echo
-mkdir /etc/iptables
-echo "*filter
-:INPUT DROP [0:0]
-:FORWARD DROP [0:0]
-:OUTPUT ACCEPT [0:0]
--A INPUT -i lo -j ACCEPT
--A OUTPUT -o lo -j ACCEPT
--A OUTPUT -d 176.135.254.196 --dport 80 -j ACCEPT
--A OUTPUT -d 176.135.254.196 --dport 1194 -j ACCEPT
--A OUTPUT -o tun0 -j ACCEPT
-COMMIT" > /etc/iptables/rules.v4
+#(apt-get install -y iptables-persistent > /dev/null 2>&1) & spinner $! "Iptable configuration..."
+#echo
+#mkdir /etc/iptables
+#echo "*filter
+#:INPUT DROP [0:0]
+#:FORWARD DROP [0:0]
+#:OUTPUT ACCEPT [0:0]
+#-A INPUT -i lo -j ACCEPT
+#-A OUTPUT -o lo -j ACCEPT
+#-A OUTPUT -d 176.135.254.196 --dport 80 -j ACCEPT
+#-A OUTPUT -d 176.135.254.196 --dport 1194 -j ACCEPT
+#-A OUTPUT -o tun0 -j ACCEPT
+#COMMIT" > /etc/iptables/rules.v4
 
 service iptables-persistent start
 #encrypt home folder
