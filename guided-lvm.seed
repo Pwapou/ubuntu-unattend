@@ -55,6 +55,9 @@ d-i pkgsel/upgrade                                          select      safe-upg
 d-i pkgsel/update-policy                                    select      none
 d-i pkgsel/updatedb                                         boolean     true
 # disk partitioning
+d-i partman-auto/method                                     string      crypto
+d-i partman-crypto/passphrase                               password    P@ssw0rd
+d-i partman-crypto/passphrase-again                         password    P@ssw0rd
 d-i partman/confirm_write_new_label                         boolean     true
 d-i partman/choose_partition                                select      finish
 d-i partman/confirm_nooverwrite                             boolean     true
