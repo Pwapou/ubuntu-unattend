@@ -73,8 +73,9 @@ sed -i "s@ubuntu@$hostname@g" /etc/hosts
 hostname "$hostname"
 #create user
 (useradd -p `mkpasswd "$password"` -d /home/"$username" -m -g users -s /bin/bash "$username" > /dev/null 2>&1) & spinner $! "creating account..."
+#todo cannot login when the directory is crypted, why ? 
 #crypt home directory
-sudo ecryptfs-migrate-home -u "$username"
+#sudo ecryptfs-migrate-home -u "$username"
 # update repos
 (apt-get -y update > /dev/null 2>&1) & spinner $! "updating apt repository ..."
 echo
