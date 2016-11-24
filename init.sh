@@ -61,7 +61,7 @@ fi
 
 # print status message
 echo " preparing your server; this may take a few minutes ..."
-(apt-get -y install whois > /dev/null 2>&1) & spinner $! "installing whois..."
+(apt-get -y install whois ecryptfs-utils > /dev/null 2>&1) & spinner $! "installing whois..."
 echo
 # set fqdn
 fqdn="$hostname.$domain"
