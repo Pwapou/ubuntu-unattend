@@ -164,7 +164,7 @@ sed -ie '/^DSHELL=/ s/=.*\+/=\/usr\/sbin\/nologin/' /etc/adduser.conf
 #-A OUTPUT -o tun0 -j ACCEPT
 #COMMIT" > /etc/iptables/rules.v4
 
-service iptables-persistent start
+#service iptables-persistent start
 #encrypt home folder
 #disable root
 echo "disable root "
