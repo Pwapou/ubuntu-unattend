@@ -170,7 +170,8 @@ sed -ie '/^DSHELL=/ s/=.*\+/=\/usr\/sbin\/nologin/' /etc/adduser.conf
 #disable root
 echo "disable root "
 sudo passwd -l root
-sudo deluser --remove-home ubuntu
+#sudo deluser --remove-home ubuntu
+passwd -l ubuntu
 # remove myself to prevent any unintended changes at a later stage
 rm $0
 # finish
