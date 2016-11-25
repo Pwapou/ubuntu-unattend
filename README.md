@@ -19,16 +19,13 @@ The script supports the following Ubuntu editions out of the box:
 ```
 git clone https://github.com/Pwapou/ubuntu-unattend.git
 And start the script with root privilege : ./create-unattended-iso.sh
-
 ```
 
 * Choose which version you would like to remaster:
 
 ```
-
   [1] Ubuntu 14.04.3 LTS Server i386  - Trusty Tahr
   [2] Ubuntu 16.04 SOON
-
 ```
 
 * Enter your desired timezone;
