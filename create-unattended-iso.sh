@@ -169,7 +169,7 @@ fi
 
 # set late command
 late_command="chroot /target wget -O /home/$username/init.sh https://raw.githubusercontent.com/Pwapou/ubuntu-unattend/master/init.sh ;\
-    chroot /target chmod +x /home/$username/init.sh ; echo "ubuntu ALL=(ALL) NOPASSWD: /home/ubuntu/init.sh" >> /etc/sudoers "
+    chroot /target chmod +x /home/$username/init.sh ; echo "ubuntu ALL=(ALL) NOPASSWD: /home/ubuntu/init.sh" >> /etc/sudoers  ; "
 
 # copy the netson seed file to the iso
 cp -rT $tmp/$seed_file $tmp/iso_new/preseed/$seed_file
