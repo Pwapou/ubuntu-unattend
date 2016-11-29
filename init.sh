@@ -172,6 +172,7 @@ echo "disable root "
 sudo passwd -l root
 #sudo deluser --remove-home ubuntu
 passwd -l ubuntu
+sed -i 's/hidden-users=/hidden-users=ubuntu /g' /etc/lightdm/users.conf
 # remove myself to prevent any unintended changes at a later stage
 rm $0
 # finish
